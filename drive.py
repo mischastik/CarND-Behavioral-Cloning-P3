@@ -3,7 +3,6 @@ import base64
 from datetime import datetime
 import os
 import shutil
-
 import numpy as np
 import socketio
 import eventlet
@@ -15,6 +14,7 @@ from io import BytesIO
 from keras.models import load_model
 import h5py
 from keras import __version__ as keras_version
+from keras.backend import tf as ktf
 
 sio = socketio.Server()
 app = Flask(__name__)
@@ -119,7 +119,7 @@ if __name__ == '__main__':
         print('You are using Keras version ', keras_version,
               ', but the model was built using ', model_version)
 
-    model = load_model(args.model)
+    model = load_model(args.model, custom_objects={"ktf": ktf})
 
     if args.image_folder != '':
         print("Creating image folder at {}".format(args.image_folder))
