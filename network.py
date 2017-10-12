@@ -58,7 +58,7 @@ from keras.backend import tf as ktf
 
 model = Sequential()
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
-model.add(Cropping2D(((70, 25), (0, 0))))
+model.add(Cropping2D(((70, 20), (0, 0))))
 model.add(Lambda(lambda x: ktf.image.resize_images(x, (66, 200))))
 model.add(Convolution2D(24, (5, 5), activation="relu"))
 model.add(MaxPooling2D())
