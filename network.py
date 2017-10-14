@@ -28,9 +28,8 @@ def generator(samples, batch_size=32):
                 for i in range(3):
                     source_path = batch_sample[i]
                     image = cv2.imread(source_path)
-                    angle = float(batch_sample[3])
                     images.append(image)
-                measurement = float(line[3])
+                measurement = float(batch_sample[3])
                 measurements.append(measurement)
                 measurements.append(measurement + 0.2)
                 measurements.append(measurement - 0.2)
@@ -55,25 +54,35 @@ from keras.layers import Flatten, Dense, Lambda, Cropping2D
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
 from keras.backend import tf as ktf
+from keras.models import load_model
+from pathlib import Path
 
-model = Sequential()
-model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
-model.add(Cropping2D(((65, 25), (0, 0))))
-model.add(Lambda(lambda x: ktf.image.resize_images(x, (68, 200))))
-model.add(Convolution2D(24, (5, 5), activation="relu"))
-model.add(MaxPooling2D())
-model.add(Convolution2D(36, (5, 5), activation="relu"))
-model.add(MaxPooling2D())
-model.add(Convolution2D(48, (5, 5), activation="relu"))
-model.add(MaxPooling2D())
-model.add(Convolution2D(64, (3, 3), activation="relu"))
-model.add(Convolution2D(64, (3, 3), activation="relu", padding="valid"))
-model.add(Flatten())
-model.add(Dense(100))
-model.add(Dense(50))
-model.add(Dense(10))
-model.add(Dense(1))
-model.compile(loss='mse', optimizer='adam')
-model.fit_generator(train_generator, steps_per_epoch=len(train_samples), epochs=3, validation_data=validation_generator,
+my_file = Path("model.h5")
+if my_file.exists():
+    model = load_model('model.h5', custom_objects={"ktf": ktf})
+    model.fit_generator(train_generator, steps_per_epoch=len(train_samples), epochs=5, validation_data=validation_generator,
                     validation_steps=len(validation_samples))
-model.save('model.h5')
+    model.save('model.h5')
+
+else:
+    model = Sequential()
+    model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
+    model.add(Cropping2D(((65, 25), (0, 0))))
+    model.add(Lambda(lambda x: ktf.image.resize_images(x, (68, 200))))
+    model.add(Convolution2D(24, (5, 5), activation="relu"))
+    model.add(MaxPooling2D())
+    model.add(Convolution2D(36, (5, 5), activation="relu"))
+    model.add(MaxPooling2D())
+    model.add(Convolution2D(48, (5, 5), activation="relu"))
+    model.add(MaxPooling2D())
+    model.add(Convolution2D(64, (3, 3), activation="relu"))
+    model.add(Convolution2D(64, (3, 3), activation="relu", padding="valid"))
+    model.add(Flatten())
+    model.add(Dense(100))
+    model.add(Dense(50))
+    model.add(Dense(10))
+    model.add(Dense(1))
+    model.compile(loss='mse', optimizer='adam')
+    model.fit_generator(train_generator, steps_per_epoch=len(train_samples), epochs=5, validation_data=validation_generator,
+                    validation_steps=len(validation_samples))
+    model.save('model.h5')
