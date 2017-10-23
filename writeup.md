@@ -127,3 +127,5 @@ I finally randomly shuffled the data set and put 20% of the data into a validati
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. I inspected the training and validation results after each epochs and stopped after three epochs since there was only little additional progress in training and validation error metrics.
 I used an adam optimizer so that manually training the learning rate wasn't necessary.
+
+Finally, I was informed by my code reviewer that I loaded the image in BGR color format while drive.py gets images in RGB format. To avoid re-training, I converted the color format from RGB to BGR in drive.py and did another test run which got even better driving results. 
