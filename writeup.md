@@ -10,7 +10,12 @@ The goals of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./model_architecture.png "Model Visualization"
+[image1]: ./writeup_materials/model_architecture.png "Model Visualization"
+[imageCenterOrig]: ./writeup_materials/center_orig.jpg "Original center input image"
+[imageLeftOrig]: ./writeup_materials/left_orig.jpg "Original left input image"
+[imageCropped]: ./writeup_materials/center_cropped.jpg "Cropped input image"
+[imageReinterpolated]: ./writeup_materials/center_cropped_reinterpolated.jpg "Reinterpolated input image"
+[imageFlipped]: ./writeup_materials/center_cropped_reinterpolated_flipped.jpg "Flipped input image"
 
 Rubric Points
 ---
@@ -87,9 +92,34 @@ The final model architecture is depicted here:
 
 To capture good driving behavior, I first recorded two laps on track one using center lane driving and an additional lap of center lane driving in the opposite direction.
 
-Next I recorded some samples of recovering when getting of center and additional samples for particualarly crucial scenarios like the bridge and very sharp turns and sections where the lane markings were missing.  
+An original unprocessed input image looks like this: 
 
-To augment the data set, I also flipped images and angles and also used the left and right camera images with a fixed angle correction value.
+![Original center input image][imageCenterOrig]
+
+The left and right views were used with a fixed correction term for the steering angle of +/- 0.2 (center view / left view)::
+
+![Original center input image][imageCenterOrig]
+![Original left input image][imageLeftOrig]
+
+All the images were cropped horizontally by 65 (top) and 25 (bottom) pixels:
+
+![Cropped input image][imageCropped]
+
+To match the expected image size of the network, the images were reinterpolated to 200x68 pixels:
+
+![Interpolated input image][imageReinterpolated]
+
+The aspect ratio was not maintained because this was not considered relevant.
+
+To augment the data set, I also flipped images and angles. The result of the horizontal flipping process can be seen here (original / flipped):
+
+![Original][imageReinterpolated]
+![Flipped][imageFlipped]
+
+
+Next, I recorded some samples of recovering when getting of center and additional samples for particualarly crucial scenarios like the bridge and very sharp turns and sections where the lane markings were missing.  
+
+
 
 After the collection and augmentation process, I had approx. 20000 data points. A generator is used to feed the tarining data to the optimizer.
 
